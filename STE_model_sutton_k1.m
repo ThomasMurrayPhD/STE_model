@@ -52,6 +52,9 @@ bopars = tapas_fitModel([],...
 
 % Ok so sutton_k1 doesn't work with posteriors (only predictions)...
 % obs_model_config.predorpost = 1;
+% 
+% Maybe I could tru editing the infStates in tapas_sutton_k1 - at the
+% moment it only outputs vhat, but not v
 
 sim = tapas_simModel(u,...
                      'tapas_sutton_k1_binary',...
@@ -61,6 +64,6 @@ sim = tapas_simModel(u,...
                      123456789);
 
 
-tapas_sutton_k1_binary_plotTraj(sim)
+tapas_sutton_k1_binary_plotTraj(sim);
 
 
