@@ -1,4 +1,4 @@
-function c = tapas_sutton_k1_binary_config
+function c = prc_sutton_k1_binary_config
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % Contains the configuration for the Rescorla-Wagner (RW) learning model for binary inputs.
@@ -58,7 +58,7 @@ function c = tapas_sutton_k1_binary_config
 c = struct;
 
 % Model name
-c.model = 'tapas_sutton_k1_binary';
+c.model = 'prc_sutton_k1_binary';
 
 % mu
 c.logmumu = log(1);
@@ -92,10 +92,10 @@ c.priorsas = [
          ];
 
 % Model function handle
-c.prc_fun = @tapas_sutton_k1_binary;
+c.prc_fun = @prc_sutton_k1_binary;
 
 % Handle to function that transforms perceptual parameters to their native space
 % from the space they are estimated in
-c.transp_prc_fun = @tapas_sutton_k1_binary_transp;
+c.transp_prc_fun = @prc_sutton_k1_binary_transp;
 
 return;

@@ -1,4 +1,4 @@
-function [traj, infStates] = tapas_sutton_k1_binary(r, p, varargin)
+function [traj, infStates] = prc_sutton_k1_binary(r, p, varargin)
 % Calculates the trajectories of v under the Rescorla-Wagner learning model
 %
 % This function can be called in two ways:
@@ -21,8 +21,8 @@ function [traj, infStates] = tapas_sutton_k1_binary(r, p, varargin)
 % COPYING or <http://www.gnu.org/licenses/>.
 
 % Transform paramaters back to their native space if needed
-if ~isempty(varargin) && strcmp(varargin{1},'trans');
-    p = tapas_sutton_k1_binary_transp(r, p);
+if ~isempty(varargin) && strcmp(varargin{1},'trans')
+    p = prc_sutton_k1_binary_transp(r, p);
 end
 
 % Unpack parameters
@@ -99,6 +99,19 @@ traj.v     = v;
 traj.vhat  = vhat;
 
 % Create matrix (in this case: vector) needed by observation model
-infStates = traj.vhat;
+% infStates = traj.vhat;
+
+
+%%% TM EDIT - so we can use posteriors in obs model
+infStates = NaN(n,1,3);
+infStates(:,:,1) = traj.vhat;
+infStates(:,:,3) = traj.v;
+
+
+
+
+
+
+
 
 return;

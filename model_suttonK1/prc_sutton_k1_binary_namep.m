@@ -1,4 +1,4 @@
-function pstruct = tapas_sutton_k1_binary_namep(pvec)
+function pstruct = prc_sutton_k1_binary_namep(pvec)
 % made by tom
 
 pstruct = struct;

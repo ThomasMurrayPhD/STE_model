@@ -1,4 +1,4 @@
-function tapas_sutton_k1_binary_plotTraj(r)
+function prc_sutton_k1_binary_plotTraj(r)
 % Plots trajectories estimated by tapas_fitModel for the tapas_rw_binary perceptual model
 % Usage:  est = tapas_fitModel(responses, inputs); tapas_rw_binary_plotTraj(est);
 %

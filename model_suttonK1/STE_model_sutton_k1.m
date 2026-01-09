@@ -9,11 +9,12 @@
 %%
 clear;
 close all;
+addpath('..');
 
 %%
 
 % example data (to get contingencies etc)
-sub_data = readtable('STE_data\10369536_A_Threat.csv');
+sub_data = readtable('..\STE_data\10369536_A_Threat.csv');
 
 % Contingency space
 cue = sub_data.Cue_idx;
@@ -40,12 +41,12 @@ y = sub_data.resp_state;
 
 
 %%
-prc_model_config = tapas_sutton_k1_binary_config();
-obs_model_config = tapas_unitsq_sgm_config();
+prc_model_config = prc_sutton_k1_binary_config();
+obs_model_config = obs_suttonK1_unitsq_sgm_config();
 
 bopars = tapas_fitModel([],...
                          u,...
-                         'tapas_sutton_k1_binary_config',...
+                         'prc_sutton_k1_binary_config',...
                          'tapas_bayes_optimal_binary_config',...
                          'tapas_quasinewton_optim_config');
 %%
@@ -55,14 +56,16 @@ bopars = tapas_fitModel([],...
 % 
 % Maybe I could tru editing the infStates in tapas_sutton_k1 - at the
 % moment it only outputs vhat, but not v
+% 
+% ^This is what I have done. Need to check whether it's ok
+
 
 sim = tapas_simModel(u,...
-                     'tapas_sutton_k1_binary',...
+                     'prc_sutton_k1_binary',...
                      bopars.p_prc.p,...
-                     'tapas_unitsq_sgm',...
+                     'obs_suttonK1_unitsq_sgm',...
                      5,...
                      123456789);
-
 
 tapas_sutton_k1_binary_plotTraj(sim);
 
