@@ -1,4 +1,4 @@
-function [y, prob] = obs1_unitsq_sgm_tbt_sim(r, infStates, p)
+function [y, prob] = obs_PredictionBias_unitsq_sgm_tbt_sim(r, infStates, p)
 % Simulates observations from a Bernoulli distribution
 %
 % --------------------------------------------------------------------------------------------------

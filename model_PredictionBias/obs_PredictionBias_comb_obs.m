@@ -1,4 +1,4 @@
-function [logp, yhat, res, logp_split] = obs1_comb_obs(r, infStates, ptrans)
+function [logp, yhat, res, logp_split] = obs_PredictionBias_comb_obs(r, infStates, ptrans)
 % [logp, yhat, res, logp_split] = m1_comb_obs(r, infStates, ptrans)
 %
 % Calculates the combined log-probability of binary and continuous
@@ -51,7 +51,7 @@ ptrans_logRT = ptrans(2:7);
 
 % compute log likelihood (binary responses)
 [logp_binary, yhat_binary, res_binary] = ...
-    obs1_unitsq_sgm_tbt(r, infStates, ptrans_sgm);
+    obs_PredictionBias_unitsq_sgm_tbt(r, infStates, ptrans_sgm);
 
 %% continuous part of the response model
 
@@ -62,7 +62,7 @@ ptrans_logRT = ptrans(2:7);
 
 % Compute the log likelihood (logRTs)
 [logp_reactionTime, yhat_reactionTime, res_reactionTime] = ...
-    obs1_logrt_linear_binary(r, infStates, ptrans_logRT);
+    obs_PredictionBias_logrt_linear_binary(r, infStates, ptrans_logRT);
 
 
 %% confidence part of the response model

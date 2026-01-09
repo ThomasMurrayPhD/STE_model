@@ -106,7 +106,7 @@ visualise_psychometric(u, sub_data, 'prc_PredictionBias_ehgf_binary_pu_tbt', prc
 N_sad = sum(sim_sad)
 
 %% Plot trajectory
-prc1_ehgf_binary_tbt_plotTraj(sim);
+prc_PredictionBias_ehgf_binary_tbt_plotTraj(sim);
 
 
 %% recover parameters
@@ -118,34 +118,6 @@ est = tapas_fitModel(...
     obs_model_config,...
     optim_config);
 
-
-%% Simulate psychometric functions
-
-% figure('name', 'simulated psychometric'); hold on;
-% prc_params_sim = prc_params;
-% obs_params_sim = obs_params;
-% for rho = [-2, 0, 2]
-% 
-%     prc_params_sim(8) = rho;
-% 
-%     sim = tapas_simModel(u,...
-%         'prc1_ehgf_binary_pu_tbt',...
-%         prc_params_sim,...
-%         'obs1_comb_obs',...
-%         obs_params_sim,...
-%         123456789);
-% 
-% 
-%     % Visualise Psychometric
-%     sim_sad = (sub_data.Cue_idx == 1 & sim.y(:,1) == 1) + (sub_data.Cue_idx == 0 & sim.y(:,1) == 0);
-%     sim_psychometric = arrayfun(@(x) mean(sim_sad(sub_data.Outcome_p_sad==x, 1)), 0:20:100);
-%     plot(0:20:100, sim_psychometric, 'linewidth', 3, 'DisplayName', sprintf('\\rho = %1.1f', rho));
-% end
-% 
-% set(gca, 'Ylim', [0,1], 'Xtick', 0:20:100)
-% ylabel('p(Sad)')
-% xlabel('%Sad')
-% legend()
 
 %% Full parameter recovery
 

@@ -1,4 +1,4 @@
-function [y, logrt] = obs1_logrt_linear_binary_sim(r, infStates, p)
+function [y, logrt] = obs_PredictionBias_logrt_linear_binary_sim(r, infStates, p)
 % [y, logrt] = m1_logrt_linear_binary_sim(r, infStates, p)
 %
 % Simulates logRTs with Gaussian noise.

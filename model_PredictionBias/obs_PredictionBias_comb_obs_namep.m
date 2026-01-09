@@ -1,4 +1,4 @@
-function [pstruct] = obs1_comb_obs_namep(pvec)
+function [pstruct] = obs_PredictionBias_comb_obs_namep(pvec)
 % [pstruct] = m1_comb_obs_namep(pvec)
 %
 % Creates a struct with a field for each parameter from parameter vector.

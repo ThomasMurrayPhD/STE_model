@@ -8,8 +8,11 @@
 %%
 clear;
 close all;
-addpath('prc1');
-addpath('obs2');
+% addpath('prc1');
+% addpath('obs2');
+
+# % Remove paths
+
 
 %% 
 
@@ -38,8 +41,8 @@ y = [sub_data.resp_state, sub_data.logRT];%, sub_data.Confidence_idx];
 
 
 %% Get configuration structures
-prc_model_config = prc1_ehgf_binary_pu_tbt_config(); % perceptual model
-obs_model_config = obs2_comb_obs_config(); % response model
+prc_model_config = prc_ResponseBias_ehgf_binary_pu_tbt_config(); % perceptual model
+obs_model_config = obs_ResponseBias_comb_obs_config(); % response model
 optim_config     = tapas_quasinewton_optim_config(); % optimisation algorithm
 optim_config.nRandInit = 5;
 
@@ -86,16 +89,16 @@ obs_model_config = tapas_align_priors(obs_model_config);
 
 r_temp = [];
 r_temp.c_prc.n_levels = 3;
-prc_params = prc1_ehgf_binary_pu_tbt_transp(r_temp, prc_model_config.priormus);
+prc_params = prc_ResponseBias_ehgf_binary_pu_tbt_transp(r_temp, prc_model_config.priormus);
 
 obs_params = obs_model_config.priormus;
 obs_params(1) = exp(obs_params(1));
 obs_params(8) = exp(obs_params(8));
 
 sim_3_bias = tapas_simModel(u,...
-    'prc1_ehgf_binary_pu_tbt',...
+    'prc_ResponseBias_ehgf_binary_pu_tbt',...
     prc_params,...
-    'obs2_comb_obs',...
+    'obs_ResponseBias_comb_obs',...
     obs_params,...
     123456789);
 
@@ -104,12 +107,12 @@ sim_sad = (sub_data.Cue_idx == 1 & sim_3_bias.y(:,1) == 1) + (sub_data.Cue_idx =
 N_sad = sum(sim_sad);
 
 
-visualise_psychometric(u, sub_data, 'prc1_ehgf_binary_pu_tbt', prc_params, 'obs2_comb_obs', obs_params, 20)
+visualise_psychometric(u, sub_data, 'prc_ResponseBias_ehgf_binary_pu_tbt', prc_params, 'obs_ResponseBias_comb_obs', obs_params, 20)
 
 
 
 %% Plot trajectory
-prc1_ehgf_binary_tbt_plotTraj(sim_3_bias);
+prc_ResponseBias_ehgf_binary_tbt_plotTraj(sim_3_bias);
 
 
 %% recover parameters
@@ -148,14 +151,14 @@ recov = parameter_recovery_master(u,...
     obs_param_names,...
     obs_param_idx,...
     obs_param_space);
-save('model3_recovery.mat', 'recov');
+save('model_ResponseBias_recovery.mat', 'recov');
 recovery_figures(recov);
 
 
 %% Fit actual data
 
 model_fits = fit_master(u, prc_model_config, obs_model_config, optim_config);
-save('model3_fit.mat', 'model_fits');
+save('model_ResponseBias_fit.mat', 'model_fits');
 
 
 

@@ -1,4 +1,4 @@
-function c = prc1_ehgf_binary_pu_tbt_config
+function c = prc_PredictionBias_ehgf_binary_pu_tbt_config
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % Contains the configuration for the Hierarchical Gaussian Filter (HGF)

@@ -1,20 +1,16 @@
-function [y, yhat] = obs2_comb_obs_sim(r, infStates, p)
-% [y, yhat] = m1_comb_obs_sim(r, infStates, p)
+function [pstruct] = obs_ResponseBias_comb_obs_namep(pvec)
+% [pstruct] = m1_comb_obs_namep(pvec)
 %
-% Simulates responses for binary and continuous data modality.
+% Creates a struct with a field for each parameter from parameter vector.
 % (Designed to be compatible with the HGF Toolbox as part of TAPAS).
 %
 % INPUT
-%   r             struct      Struct obtained from tapas_simModel.m fct
-%   infStates     tensor      Tensor containing inferred states from the
-%                             perceptual model    
-%   p             vector      1xP vector with free param values (nat space)
+%   pvec       vector        1xP vector containing model params
 %
 %   OPTIONAL:
 %
 % OUTPUT    
-%   y             matrix       Nx2 matrix with simulated responses
-%   yhat          matrix       Nx2 matrix containing noise-free predictions
+%   pstruct      struct      Struct with fields for mdoel params
 %
 % _________________________________________________________________________
 % Author: Alex Hess
@@ -38,24 +34,15 @@ function [y, yhat] = obs2_comb_obs_sim(r, infStates, p)
 % with this program. If not, see <https://www.gnu.org/licenses/>.
 % _________________________________________________________________________
 
+pstruct = struct;
 
+pstruct.zeta0 = pvec(1);
+pstruct.zeta1 = pvec(2);
+pstruct.beta0 = pvec(3);
+pstruct.beta1 = pvec(4);
+pstruct.beta2 = pvec(5);
+pstruct.beta3 = pvec(6);
+pstruct.beta4 = pvec(7);
+pstruct.sa    = pvec(8);
 
-%% Separate parameters
-
-p_sgm = p(1:2); % parameters for the sigmoid model
-p_logRT = p(3:8); % parameters for the RT model
-
-
-%% Run sim for binary predictions
-[pred, yhat_pred] = obs2_unitsq_sgm_tbt_sim(r, infStates, p_sgm);
-
-%% Run sim for continuous data modality (logRTs)
-[logReactionTime, yhat_rt] = obs2_logrt_linear_binary_sim(r, infStates, p_logRT);
-
-
-%% save values for both response data modalities
-y = [pred logReactionTime];
-yhat = [yhat_pred yhat_rt];
-
-end
-
+return;

@@ -1,4 +1,4 @@
-function [logp, yhat, res] = obs2_logrt_linear_binary(r, infStates, ptrans)
+function [logp, yhat, res] = obs_ResponseBias_logrt_linear_binary(r, infStates, ptrans)
 % [logp, yhat, res] = m1_logrt_linear_binary(r, infStates, ptrans)
 %
 % Calculates the log-probability of log-reaction times y (in units of

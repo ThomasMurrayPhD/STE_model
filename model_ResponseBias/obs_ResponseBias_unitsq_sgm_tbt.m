@@ -1,4 +1,4 @@
-function [logp, yhat, res] = obs2_unitsq_sgm_tbt(r, infStates, ptrans)
+function [logp, yhat, res] = obs_ResponseBias_unitsq_sgm_tbt(r, infStates, ptrans)
 % Calculates the log-probability of response y=1 under the unit-square sigmoid model
 %
 % --------------------------------------------------------------------------------------------------

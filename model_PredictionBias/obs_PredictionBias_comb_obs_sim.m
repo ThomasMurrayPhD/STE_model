@@ -1,4 +1,4 @@
-function [y, yhat] = obs1_comb_obs_sim(r, infStates, p)
+function [y, yhat] = obs_PredictionBias_comb_obs_sim(r, infStates, p)
 % [y, yhat] = m1_comb_obs_sim(r, infStates, p)
 %
 % Simulates responses for binary and continuous data modality.

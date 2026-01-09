@@ -1,4 +1,4 @@
-function pstruct = prc1_ehgf_binary_pu_tbt_namep(pvec)
+function pstruct = prc_ResponseBias_ehgf_binary_pu_tbt_namep(pvec)
 % --------------------------------------------------------------------------------------------------
 % Copyright (C) 2012-2015 Christoph Mathys, TNU, UZH & ETHZ
 %

@@ -1,4 +1,4 @@
-function [c] = obs2_comb_obs_config()
+function [c] = obs_ResponseBias_comb_obs_config()
 % [c] = m1_comb_obs_config()
 %
 % Contains the prior configurations of the combined response model M1.
@@ -43,7 +43,7 @@ c = struct;
 c.predorpost = 2; % Posteriors
 
 % Model name
-c.model = 'obs2_comb_obs';
+c.model = 'obs_ResponseBias_comb_obs';
 
 
 %% Sufficient statistics of Gaussian parameter priors
@@ -108,10 +108,10 @@ c.priorsas = [
     ];
 
 % Model filehandle
-c.obs_fun = @obs2_comb_obs;
+c.obs_fun = @obs_ResponseBias_comb_obs;
 
 % Handle to function that transforms perceptual parameters to their native
 % space from the space they are estimated in
-c.transp_obs_fun = @obs2_comb_obs_transp;
+c.transp_obs_fun = @obs_ResponseBias_comb_obs_transp;
 
 return;

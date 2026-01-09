@@ -1,4 +1,4 @@
-function [traj, infStates] = prc1_ehgf_binary_pu_tbt(r, p, varargin)
+function [traj, infStates] = prc_ResponseBias_ehgf_binary_pu_tbt(r, p, varargin)
 % Calculates the trajectories of the agent's representations under the HGF
 %
 % This function can be called in two ways:

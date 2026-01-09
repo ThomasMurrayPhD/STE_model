@@ -1,4 +1,10 @@
-function prc1_ehgf_binary_combObs_plotTraj(r)
+function prc_ResponseBias_ehgf_binary_combObs_plotTraj(r)
+
+
+#
+% What is this file - do I even use it...
+
+
 % Plots the estimated or generated trajectories for the binary HGF
 % perceptual model Usage example:  est = tapas_fitModel(responses, inputs);
 % tapas_hgf_binary_plotTraj(est);

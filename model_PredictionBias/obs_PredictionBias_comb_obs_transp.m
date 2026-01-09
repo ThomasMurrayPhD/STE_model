@@ -1,4 +1,4 @@
-function [pvec, pstruct] = obs1_comb_obs_transp(r, ptrans)
+function [pvec, pstruct] = obs_PredictionBias_comb_obs_transp(r, ptrans)
 % [pvect, pstruct] = comb_obs_transp(r, ptrans)
 %
 % Transforms parameter values from estimation into native space.
