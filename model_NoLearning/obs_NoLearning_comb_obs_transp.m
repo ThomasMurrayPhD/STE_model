@@ -1,16 +1,18 @@
-function [pstruct] = obs3_comb_obs_namep(pvec)
-% [pstruct] = m1_comb_obs_namep(pvec)
+function [pvec, pstruct] = obs_NoLearning_comb_obs_transp(r, ptrans)
+% [pvect, pstruct] = comb_obs_transp(r, ptrans)
 %
-% Creates a struct with a field for each parameter from parameter vector.
+% Transforms parameter values from estimation into native space.
 % (Designed to be compatible with the HGF Toolbox as part of TAPAS).
 %
 % INPUT
-%   pvec       vector        1xP vector containing model params
+%   r            struct      Struct obtained from tapas_fitModel.m fct
+%   ptrans       vector      1xP vector containing model params (est space)
 %
 %   OPTIONAL:
 %
 % OUTPUT    
-%   pstruct      struct      Struct with fields for mdoel params
+%   pvect        vector      1xP vector containing model params (nat space)
+%   pstruct      struct      Empty struct
 %
 % _________________________________________________________________________
 % Author: Alex Hess
@@ -34,18 +36,42 @@ function [pstruct] = obs3_comb_obs_namep(pvec)
 % with this program. If not, see <https://www.gnu.org/licenses/>.
 % _________________________________________________________________________
 
+% empty array
+pstruct = struct();
+
+% vector with parameter values transformed back into native space
+pvec = ptrans;
 
 
-pstruct = struct;
+% psychometric
+pvec(1)     = tapas_sgm(ptrans(1), 1); % alpha (midpoint)
+pstruct.alpha  = pvec(1);
 
-pstruct.alpha = pvec(1);
-pstruct.beta = pvec(2);
+pvec(2)     = exp(ptrans(2)); % beta (slope)
+pstruct.beta  = pvec(2);
+
+pvec(3)     = tapas_sgm(ptrans(3), 1); % gamma0
 pstruct.gamma0 = pvec(3);
-pstruct.lambda0 = pvec(4);
-pstruct.mu = pvec(5);
-pstruct.sigma0 = pvec(6);
-pstruct.gamma1 = pvec(7);
-pstruct.lambda1    = pvec(8);
-pstruct.sigma1    = pvec(8);
 
-return;
+pvec(4)     = tapas_sgm(ptrans(4), 1); % lambda0
+pstruct.lambda0 = pvec(4);
+
+
+% gaussian
+pvec(5)     = tapas_sgm(ptrans(5), 1); % mu
+pstruct.mu = pvec(5);
+
+pvec(6)     = exp(ptrans(6));         % sigma0
+pstruct.sigma0 = pvec(6);
+
+pvec(7)     = exp(ptrans(7));         % gamma1
+pstruct.gamma1 = pvec(7);
+
+pvec(8)     = exp(ptrans(8));    % lambda1
+pstruct.lambda1  = pvec(8);
+
+pvec(9)     = exp(ptrans(9));    % sigma1 (noise)
+pstruct.sigma1  = pvec(9);
+
+
+end

@@ -9,8 +9,10 @@
 %%
 clear;
 close all;
-addpath('prc1');
-addpath('obs1');
+% addpath('prc1');
+% addpath('obs1');
+
+# % REmove paths
 
 %% 
 
@@ -39,8 +41,8 @@ y = [sub_data.resp_state, sub_data.logRT];%, sub_data.Confidence_idx];
 
 
 %% Get configuration structures
-prc_model_config = prc1_ehgf_binary_pu_tbt_config(); % perceptual model
-obs_model_config = obs1_comb_obs_config(); % response model
+prc_model_config = prc_PredictionBias_ehgf_binary_pu_tbt_config(); % perceptual model
+obs_model_config = obs_PredictionBias_comb_obs_config(); % response model
 optim_config     = tapas_quasinewton_optim_config(); % optimisation algorithm
 optim_config.nRandInit = 5;
 
@@ -83,16 +85,16 @@ obs_model_config = tapas_align_priors(obs_model_config);
 
 r_temp = [];
 r_temp.c_prc.n_levels = 3;
-prc_params = prc1_ehgf_binary_pu_tbt_transp(r_temp, prc_model_config.priormus);
+prc_params = prc_PredictionBias_ehgf_binary_pu_tbt_transp(r_temp, prc_model_config.priormus);
 
 obs_params = obs_model_config.priormus;
 obs_params(1) = exp(obs_params(1));
 obs_params(7) = exp(obs_params(7));
 % obs_params(8) = 3;%exp(obs_params(8));
 sim = tapas_simModel(u,...
-    'prc1_ehgf_binary_pu_tbt',...
+    'prc_PredictionBias_ehgf_binary_pu_tbt',...
     prc_params,...
-    'obs1_comb_obs',...
+    'obs_PredictionBias_comb_obs',...
     obs_params,...
     123456789);
 
@@ -100,7 +102,7 @@ sim = tapas_simModel(u,...
 sim_sad = (sub_data.Cue_idx == 1 & sim.y(:,1) == 1) + (sub_data.Cue_idx == 0 & sim.y(:,1) == 0);
 
 
-visualise_psychometric(u, sub_data, 'prc1_ehgf_binary_pu_tbt', prc_params, 'obs1_comb_obs', obs_params, 20)
+visualise_psychometric(u, sub_data, 'prc_PredictionBias_ehgf_binary_pu_tbt', prc_params, 'obs_PredictionBias_comb_obs', obs_params, 20)
 N_sad = sum(sim_sad)
 
 %% Plot trajectory
@@ -169,7 +171,7 @@ recov = parameter_recovery_master(u,...
     obs_param_names,...
     obs_param_idx,...
     obs_param_space);
-save('model1_recovery.mat', 'recov');
+save('model_PredictionBias_recovery.mat', 'recov');
 recovery_figures(recov);
 
 % recovery looks good for rho2 and omega2. For alpha, some huge outliers,
@@ -180,7 +182,7 @@ recovery_figures(recov);
 %% Fit actual data
 
 model_fits = fit_master(u, prc_model_config, obs_model_config, optim_config);
-save('model1_fit.mat', 'model_fits');
+save('model_PredictionBias_fit.mat', 'model_fits');
 
 
 

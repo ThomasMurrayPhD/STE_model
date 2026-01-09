@@ -4,7 +4,10 @@
 %%
 clear;
 close all;
-addpath('obs3');
+
+##
+% Remove paths to other models?
+
 
 %% 
 
@@ -20,7 +23,7 @@ y = [sub_data.Response_idx, log(sub_data.Response_RT)];
 
 %% Get configuration structures
 prc_model_config = tapas_ehgf_binary_config(); % perceptual model
-obs_model_config = obs3_comb_obs_config(); % response model
+obs_model_config = obs_NoLearning_comb_obs_config(); % response model
 optim_config     = tapas_quasinewton_optim_config(); % optimisation algorithm
 optim_config.nRandInit = 5;
 
@@ -75,7 +78,7 @@ obs_params = obs3_comb_obs_transp([], obs_model_config.priormus);
 sim = tapas_simModel(u,...
     'tapas_ehgf_binary',...
     prc_params,...
-    'obs3_comb_obs',...
+    'obs_NoLearning_comb_obs',...
     obs_params,...
     123456789);
 
@@ -87,7 +90,7 @@ for i = 1:N
     sim = tapas_simModel(u,...
         'tapas_ehgf_binary',...
         prc_params,...
-        'obs3_comb_obs',...
+        'obs_NoLearning_comb_obs',...
         obs_params);
     all_y(:,:,i) = sim.y;
 end
@@ -185,7 +188,7 @@ recov = parameter_recovery_master(u,...
     obs_param_names,...
     obs_param_idx,...
     obs_param_space);
-save('model4_attempt2_recovery.mat', 'recov');
+save('model_NoLearning_recovery.mat', 'recov');
 
 recovery_figures(recov);
 
@@ -245,7 +248,7 @@ for i = 1:N_files
     completion_times(i) = toc;
 end
 
-save('model4_fit.mat', 'model_fits');
+save('model_NoLearning_fit.mat', 'model_fits');
 
 
 

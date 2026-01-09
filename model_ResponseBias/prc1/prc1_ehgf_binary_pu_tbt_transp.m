@@ -1,4 +1,4 @@
-function [pvec, pstruct] = prc2_ehgf_binary_pu_tbt_transp(r, ptrans)
+function [pvec, pstruct] = prc1_ehgf_binary_pu_tbt_transp(r, ptrans)
 % --------------------------------------------------------------------------------------------------
 % Copyright (C) 2012-2015 Christoph Mathys, TNU, UZH & ETHZ
 %

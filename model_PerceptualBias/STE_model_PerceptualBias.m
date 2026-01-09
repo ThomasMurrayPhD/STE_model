@@ -9,8 +9,11 @@
 %%
 clear;
 close all;
-addpath('prc2');
-addpath('obs1');
+% addpath('prc2');
+% addpath('obs1');
+
+# % Remove paths to other models?
+
 
 %% 
 
@@ -39,8 +42,8 @@ y = [sub_data.resp_state, sub_data.logRT];%, sub_data.Confidence_idx];
 
 
 %% Get configuration structures
-prc_model_config = prc2_ehgf_binary_pu_tbt_config(); % perceptual model
-obs_model_config = obs1_comb_obs_config(); % response model
+prc_model_config = prc_PerceptualBias_ehgf_binary_pu_tbt_config(); % perceptual model
+obs_model_config = obs_PerceptualBias_comb_obs_config(); % response model
 optim_config     = tapas_quasinewton_optim_config(); % optimisation algorithm
 optim_config.nRandInit = 5;
 
@@ -83,16 +86,16 @@ obs_model_config = tapas_align_priors(obs_model_config);
 
 r_temp = [];
 r_temp.c_prc.n_levels = 3;
-prc_params = prc2_ehgf_binary_pu_tbt_transp(r_temp, prc_model_config.priormus);
+prc_params = prc_PerceptualBias_ehgf_binary_pu_tbt_transp(r_temp, prc_model_config.priormus);
 
 obs_params = obs_model_config.priormus;
 obs_params(1) = exp(obs_params(1));
 obs_params(7) = exp(obs_params(7));
 % obs_params(8) = 3;%exp(obs_params(8));
 sim_2_bias = tapas_simModel(u,...
-    'prc2_ehgf_binary_pu_tbt',...
+    'prc_PerceptualBias_ehgf_binary_pu_tbt',...
     prc_params,...
-    'obs1_comb_obs',...
+    'obs_PerceptualBias_comb_obs',...
     obs_params,...
     123456789);
 
@@ -101,12 +104,12 @@ sim_sad = (sub_data.Cue_idx == 1 & sim_2_bias.y(:,1) == 1) + (sub_data.Cue_idx =
 N_sad = sum(sim_sad);
 
 
-visualise_psychometric(u, sub_data, 'prc2_ehgf_binary_pu_tbt', prc_params, 'obs1_comb_obs', obs_params, 20)
+visualise_psychometric(u, sub_data, 'prc_PerceptualBias_ehgf_binary_pu_tbt', prc_params, 'obs_PerceptualBias_comb_obs', obs_params, 20)
 
 
 
 %% Plot trajectory
-prc2_ehgf_binary_tbt_plotTraj(sim_2_bias);
+prc_PerceptualBias_ehgf_binary_tbt_plotTraj(sim_2_bias);
 
 
 %% recover parameters
@@ -144,14 +147,14 @@ recov = parameter_recovery_master(u,...
     obs_param_names,...
     obs_param_idx,...
     obs_param_space);
-save('model2_recovery.mat', 'recov');
+save('model_PerceptualBias_recovery.mat', 'recov');
 recovery_figures(recov);
 
 
 %% Fit actual data
 
 model_fits = fit_master(u, prc_model_config, obs_model_config, optim_config);
-save('model2_fit.mat', 'model_fits');
+save('model_PerceptualBias_fit.mat', 'model_fits');
 
 
 

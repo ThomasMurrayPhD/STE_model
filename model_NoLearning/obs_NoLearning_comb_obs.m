@@ -1,4 +1,4 @@
-function [logp, yhat, res, logp_split] = obs3_comb_obs(r, infStates, ptrans)
+function [logp, yhat, res, logp_split] = obs_NoLearning_comb_obs(r, infStates, ptrans)
 % [logp, yhat, res, logp_split] = obs3_comb_obs(r, infStates, ptrans)
 %
 % Calculates the combined log-probability of binary and continuous

@@ -1,4 +1,4 @@
-function [traj, infStates] = prc2_ehgf_binary_pu_tbt(r, p, varargin)
+function [traj, infStates] = prc1_ehgf_binary_pu_tbt(r, p, varargin)
 % Calculates the trajectories of the agent's representations under the HGF
 %
 % This function can be called in two ways:
@@ -23,7 +23,7 @@ function [traj, infStates] = prc2_ehgf_binary_pu_tbt(r, p, varargin)
 
 % Transform paramaters back to their native space if needed
 if ~isempty(varargin) && strcmp(varargin{1},'trans')
-    p = prc2_ehgf_binary_pu_tbt_transp(r, p);
+    p = prc1_ehgf_binary_pu_tbt_transp(r, p);
 end
 
 % Number of levels
@@ -109,7 +109,7 @@ for k = 2:1:n
         %%%%%%%%%%%%%%%%%%%%%%
         
         % 2nd level prediction
-        muhat(k,2) = mu(k-1,2);% +t(k) *rho(2)*cue(k);
+        muhat(k,2) = mu(k-1,2) +t(k) *rho(2)*cue(k);
         
         % 1st level
         % ~~~~~~~~~
@@ -127,19 +127,6 @@ for k = 2:1:n
         mu(k,1) = muhat(k,1) *und1 /(muhat(k,1) *und1 + (1 -muhat(k,1)) *und0);
 
 
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        % Rho bias
-        if mu(k,1) < eps % crashes if mu = 1 or 0
-            mu(k,1) = eps;
-        elseif mu(k,1) > (1-eps)
-            mu(k,1) = 1-eps;
-        end
-        mu_temp = tapas_logit(mu(k,1), 1);
-        mu_temp = mu_temp + (rho(2)*cue(k));
-        mu(k,1) = tapas_sgm(mu_temp, 1);
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-        
         % Prediction error
         da(k,1) = mu(k,1) -muhat(k,1);
 

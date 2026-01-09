@@ -1,4 +1,4 @@
-function c = prc2_ehgf_binary_pu_tbt_config
+function c = prc_PerceptualBias_ehgf_binary_pu_tbt_config
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % Contains the configuration for the Hierarchical Gaussian Filter (HGF)
@@ -208,10 +208,10 @@ if length([c.priormus, c.priorsas]) ~= 2*expectedLength;
 end
 
 % Model function handle
-c.prc_fun = @prc2_ehgf_binary_pu_tbt;
+c.prc_fun = @prc_PerceptualBias_ehgf_binary_pu_tbt;
 
 % Handle to function that transforms perceptual parameters to their native space
 % from the space they are estimated in
-c.transp_prc_fun = @prc2_ehgf_binary_pu_tbt_transp;
+c.transp_prc_fun = @prc_PerceptualBias_ehgf_binary_pu_tbt_transp;
 
 return;

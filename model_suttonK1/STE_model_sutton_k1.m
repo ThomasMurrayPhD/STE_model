@@ -1,9 +1,9 @@
 % Script to use the sutton k1 model
 
 % Perceptual model 
-%   = [prc2] Sutton K1
+%   = [prc3] Sutton K1
 % Response model 
-%   = [obs1] combined unitsq_sgm and logRT
+%   = [obs4] combined unitsq_sgm and logRT (sutton_k1 specific)
 
 
 %%
