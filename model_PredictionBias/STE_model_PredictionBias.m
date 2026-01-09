@@ -9,15 +9,13 @@
 %%
 clear;
 close all;
-% addpath('prc1');
-% addpath('obs1');
+addpath('..');
 
-# % REmove paths
 
 %% 
 
 % example data (to get contingencies etc)
-sub_data = readtable('STE_data\10369536_A_Threat.csv');
+sub_data = readtable('..\STE_data\10369536_A_Threat.csv');
 
 % Contingency space
 cue = sub_data.Cue_idx;

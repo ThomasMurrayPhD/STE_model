@@ -5,14 +5,13 @@
 clear;
 close all;
 
-##
-% Remove paths to other models?
+addpath('..')
 
 
 %% 
 
 % example data (to get contingencies etc)
-sub_data = readtable('STE_data\10369536_A_Threat.csv');
+sub_data = readtable('..\STE_data\10369536_A_Threat.csv');
 
 % input as %sad
 u = sub_data.Outcome_p_sad/100;
@@ -73,7 +72,7 @@ r_temp = [];
 r_temp.c_prc.n_levels = 3;
 prc_params = tapas_ehgf_binary_transp(r_temp, prc_model_config.priormus);
 
-obs_params = obs3_comb_obs_transp([], obs_model_config.priormus);
+obs_params = obs_NoLearning_comb_obs_transp([], obs_model_config.priormus);
 
 sim = tapas_simModel(u,...
     'tapas_ehgf_binary',...
@@ -195,7 +194,7 @@ recovery_figures(recov);
 
 %% Fit actual data
 
-STE_dir = dir('STE_data\*.csv');
+STE_dir = dir('..\STE_data\*.csv');
 N_files = numel(STE_dir);
 model_fits(N_files) = struct('ID', [], 'group', '', 'condition', '', 'est', struct());
 

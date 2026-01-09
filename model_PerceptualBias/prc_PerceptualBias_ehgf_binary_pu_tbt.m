@@ -23,7 +23,7 @@ function [traj, infStates] = prc_PerceptualBias_ehgf_binary_pu_tbt(r, p, varargi
 
 % Transform paramaters back to their native space if needed
 if ~isempty(varargin) && strcmp(varargin{1},'trans')
-    p = prc2_ehgf_binary_pu_tbt_transp(r, p);
+    p = prc_PerceptualBias_ehgf_binary_pu_tbt_transp(r, p);
 end
 
 % Number of levels

@@ -23,7 +23,7 @@ function [traj, infStates] = prc_ResponseBias_ehgf_binary_pu_tbt(r, p, varargin)
 
 % Transform paramaters back to their native space if needed
 if ~isempty(varargin) && strcmp(varargin{1},'trans')
-    p = prc1_ehgf_binary_pu_tbt_transp(r, p);
+    p = prc_ResponseBias_ehgf_binary_pu_tbt_transp(r, p);
 end
 
 % Number of levels
