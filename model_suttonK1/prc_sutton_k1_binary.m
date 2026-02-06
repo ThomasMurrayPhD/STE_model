@@ -26,7 +26,7 @@ if ~isempty(varargin) && strcmp(varargin{1},'trans')
 end
 
 % Unpack parameters
-mu     = p(1);
+mu     = p(1); % meta learning rate (how fast learning rate adapts)
 Rhat   = p(2);
 vhat_1 = p(3);
 h_1    = p(4);
@@ -85,18 +85,17 @@ v(1) = [];
 % Remove ends of overlong trajectories
 be(end)   = [];
 h(end)    = [];
-be(end)   = [];
 vhat(end) = [];
 
 % Create result data structure
 traj = struct;
 
-traj.da    = da;
-traj.be    = be;
-traj.al    = al;
-traj.h     = h;
-traj.v     = v;
-traj.vhat  = vhat;
+traj.da    = da; % prediction error
+traj.be    = be; % beta - unconstrained learning rate (log gain)
+traj.al    = al; % alpha
+traj.h     = h; % h (not sure)
+traj.v     = v; % posterior
+traj.vhat  = vhat; % prediction
 
 % Create matrix (in this case: vector) needed by observation model
 % infStates = traj.vhat;

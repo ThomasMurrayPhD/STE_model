@@ -41,24 +41,59 @@ y = sub_data.resp_state;
 
 
 %%
-prc_model_config = prc_RW_binary_config();
-obs_model_config = obs_RW_unitsq_sgm_config();
+prc_model_config = prc_sutton_k1_binary_config();
+obs_model_config = obs_suttonK1_unitsq_sgm_config();
+optim_config     = tapas_quasinewton_optim_config(); % optimisation algorithm
+
+prc_model_config.logitvhat_1sa = 0; % fix vhat1 to .5
+prc_model_config = tapas_align_priors(prc_model_config);
 
 bopars = tapas_fitModel([],...
                          u,...
-                         'prc_RW_binary_config',...
+                         prc_model_config,...
                          'tapas_bayes_optimal_binary_config',...
                          'tapas_quasinewton_optim_config');
 %%
 
+% Ok so sutton_k1 doesn't work with posteriors (only predictions)...
+% obs_model_config.predorpost = 1;
+% 
+% Maybe I could tru editing the infStates in tapas_sutton_k1 - at the
+% moment it only outputs vhat, but not v
+% 
+% ^This is what I have done.
+
 
 sim = tapas_simModel(u,...
-                     'prc_RW_binary',...
+                     'prc_sutton_k1_binary',...
                      bopars.p_prc.p,...
-                     'obs_RW_unitsq_sgm',...
+                     'obs_suttonK1_unitsq_sgm',...
                      5,...
                      123456789);
 
-prc_RW_binary_plotTraj(sim);
+prc_sutton_k1_binary_plotTraj(sim);
+
+
+%% Fit
+est = tapas_fitModel(...
+    sim.y,...
+    sim.u,...
+    prc_model_config,...
+    obs_model_config,...
+    optim_config);
+
+% Cool... Ok lets try out the logRT model
+
+%% LogRT 
+prc_model_config = prc_sutton_k1_binary_config();
+obs_model_config = obs_suttonK1_logrt_linear_binary_config();
+optim_config     = tapas_quasinewton_optim_config(); % optimisation algorithm
+
+prc_model_config.logitvhat_1sa = 0; % fix vhat1 to .5
+prc_model_config = tapas_align_priors(prc_model_config);
+
+
+
+
 
 
