@@ -61,7 +61,7 @@ c = struct;
 c.model = 'prc_sutton_k1_binary';
 
 % mu
-c.logmumu = log(1);
+c.logmumu = log(3);
 c.logmusa = 10^2;
 
 % Rhat
@@ -70,7 +70,7 @@ c.logRhatsa = 0;
 
 % Initial vhat
 c.logitvhat_1mu = tapas_logit(0.5, 1);
-c.logitvhat_1sa = 4^2;
+c.logitvhat_1sa = 0;
 
 % Initial h
 c.logh_1mu = log(0.005);

@@ -69,7 +69,7 @@ c.beta2sa = 5;%5;
 
 
 % Sigma (noise term)
-c.logsamu = -2;
+c.logsamu = log(0.9);
 c.logsasa = 2;
 
 

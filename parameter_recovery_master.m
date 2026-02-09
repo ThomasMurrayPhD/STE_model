@@ -42,6 +42,7 @@ completion_times = zeros(N, 1);
 % Main loop
 for i = 1:N
     tic;
+    fprintf('\n--------------------------------\n')
     fprintf('\nParameter recovery iteration %i\n', i);
     if i>1
         avg_iter_time = mean(completion_times(1:i));

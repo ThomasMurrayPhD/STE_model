@@ -12,7 +12,7 @@ function prc_sutton_k1_binary_plotTraj(r)
 
 % Set up display
 scrsz = get(0,'screenSize');
-outerpos = [0.2*scrsz(3),0.7*scrsz(4),0.8*scrsz(3),0.3*scrsz(4)];
+outerpos = [0.2*scrsz(3),0.3*scrsz(4),0.8*scrsz(3),0.6*scrsz(4)];
 figure(...
     'OuterPosition', outerpos,...
     'Name','Sutton K1 binary fit results');
@@ -23,7 +23,7 @@ t = length(r.u(:,1));
 % TM - plot learning rate
 subplot(2,1,1); hold on;
 plot(1:t, r.traj.al, 'linewidth', 3);
-title('Learning Rate (blue)');
+title('Learning Rate');
 
 % Plot
 subplot(2,1,2);
