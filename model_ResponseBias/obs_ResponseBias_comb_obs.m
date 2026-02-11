@@ -43,33 +43,151 @@ function [logp, yhat, res, logp_split] = obs_ResponseBias_comb_obs(r, infStates,
 
 
 %% Separate parameters
-ptrans_sgm = ptrans(1:2); % parameters for the sigmoid model
-ptrans_logRT = ptrans(3:8); % parameters for the RT model
+% Transform parameters to their native space
+
+% Binary parameters
+zeta0 = exp(ptrans(1));
+zeta1 = ptrans(2);
+
+
+% LogRT parameters
+be0  = ptrans(3);
+be1  = ptrans(4);
+be2  = ptrans(5);
+be3  = ptrans(6);
+be4  = ptrans(7);
+sa   = exp(ptrans(8));
+
 
 
 %% binary part of the response model
-
 % compute log likelihood (binary responses)
-[logp_binary, yhat_binary, res_binary] = ...
-    obs_ResponseBias_unitsq_sgm_tbt(r, infStates, ptrans_sgm);
+
+
+% Predictions or posteriors?
+pop = 1; % Default: predictions
+if r.c_obs.predorpost == 2
+    pop = 3; % Alternative: posteriors
+end
+
+
+
+% Initialize returned log-probabilities as NaNs so that NaN is
+% returned for all irregualar trials
+n = size(infStates,1);
+logp_binary = NaN(n,1);
+yhat_binary = NaN(n,1);
+res_binary  = NaN(n,1);
+
+% Weed irregular trials out from inferred states and responses
+x_state = infStates(:,1,pop);
+
+% add bias here
+x_state(x_state == 0) = eps;
+x_state(x_state == 1) = 1-eps;
+x_state_temp = tapas_logit(x_state, 1);
+x_state_temp = x_state_temp + (zeta1*r.u(:,2)); % add bias
+x_state = tapas_sgm(x_state_temp, 1);
+
+
+x_state(r.irr) = [];
+y = r.y(:,1);
+y(r.irr) = [];
+
+
+% Avoid any numerical problems when taking logarithms close to 1
+logx = log(x_state);
+log1pxm1 = log1p(x_state-1);
+logx(1-x_state<1e-4) = log1pxm1(1-x_state<1e-4);
+log1mx = log(1-x_state);
+log1pmx = log1p(-x_state);
+log1mx(x_state<1e-4) = log1pmx(x_state<1e-4); 
+
+
+% Calculate log-probabilities for non-irregular trials
+reg = ~ismember(1:n,r.irr);
+logp_binary(reg) = y.*zeta0.*(logx -log1mx) +zeta0.*log1mx -log((1-x_state).^zeta0 +x_state.^zeta0);
+yhat_binary(reg) = x_state;
+res_binary(reg) = (y-x_state)./sqrt(x_state.*(1-x_state));
+
+
+
+
+
+
+
+
 
 %% continuous part of the response model
-
-% prepare inputs for logRT GLM assuming that the input is a matrix with 2
-% columns (1: binary predictions, 2: log response times).
-% rt = r;
-% rt.y = r.y(:,2);
-
 % Compute the log likelihood (logRTs)
-[logp_reactionTime, yhat_reactionTime, res_reactionTime] = ...
-    obs_ResponseBias_logrt_linear_binary(r, infStates, ptrans_logRT);
 
 
-%% confidence part of the response model
-% confidence01 = r.y(:,4);
-% 
-% [logp_confidence, yhat_confidence, res_confidence] = ...
-%     tapas_softmax_binary(confidence01, infStates, ptrans);
+
+% Initialize returned log-probabilities, predictions,
+% and residuals as NaNs so that NaN is returned for all
+% irregualar trials
+n = size(infStates,1);
+logp_reactionTime = NaN(n,1);
+yhat_reactionTime = NaN(n,1);
+res_reactionTime  = NaN(n,1);
+
+% Weed irregular trials out from responses and inputs
+y = r.y(:,2);
+y(r.irr) = [];
+
+
+u_al = r.u(:,1);
+u = u_al>0.5;
+stim_noise = 0.5-abs(u_al-.5); % [0,1]->0, [.2,.8]->.2, [.4,.6]->.4
+
+
+% Extract trajectories of interest from infStates
+mu1hat = infStates(:,1,1);
+sa1hat = infStates(:,1,2);
+mu2    = infStates(:,2,3);
+sa2    = infStates(:,2,4);
+% mu3    = infStates(:,3,3);
+
+
+% Surprise
+% ~~~~~~~~
+poo = mu1hat.^u.*(1-mu1hat).^(1-u); % probability of observed outcome
+surp = -log2(poo);
+% surp_shifted = [1; surp(1:(length(surp)-1))];
+
+% Bernoulli variance (aka irreducible uncertainty, risk) 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+bernv = sa1hat;
+
+% Inferential variance (aka informational or estimation uncertainty, ambiguity)
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+inferv = tapas_sgm(mu2, 1).*(1 -tapas_sgm(mu2, 1)).*sa2; % transform down to 1st level
+
+% Phasic volatility (aka environmental or unexpected uncertainty)
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+% pv = tapas_sgm(mu2, 1).*(1-tapas_sgm(mu2, 1)).*exp(mu3); % transform down to 1st level
+
+
+% Calculate predicted log-reaction time
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+% logrt = be0 +be1.*surp +be2.*bernv +be3.*inferv +be4.*pv;
+logrt = be0 +be1.*surp +be2.*bernv +be3.*inferv +be4.*stim_noise;
+
+
+
+% Calculate log-probabilities for non-irregular trials
+% Note: 8*atan(1) == 2*pi (this is used to guard against
+% errors resulting from having used pi as a variable).
+reg = ~ismember(1:n,r.irr);
+logp_reactionTime(reg) = -1/2.*log(8*atan(1).*sa) -(y-logrt).^2./(2.*sa);
+yhat_reactionTime(reg) = logrt;
+res_reactionTime(reg) = y-logrt;
+
+
+
+
+
+
 
 %% get combined log likelihood of two response data modalities
 logp = logp_binary + logp_reactionTime;

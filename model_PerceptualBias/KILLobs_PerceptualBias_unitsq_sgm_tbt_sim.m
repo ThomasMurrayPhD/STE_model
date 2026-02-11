@@ -31,8 +31,6 @@ ze = p;
 % y(r.irr) = [];
 
 
-
-
 % Apply the unit-square sigmoid to the inferred states
 prob = x_state.^ze./(x_state.^ze+(1-x_state).^ze);
 

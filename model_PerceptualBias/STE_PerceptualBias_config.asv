@@ -1,0 +1,12 @@
+function [prc_config, obs_config] = STE_PerceptualBias_config
+
+% Perceptual model
+prc_config = prc_PerceptualBias_ehgf_binary_pu_tbt_config;
+
+
+
+
+% Response model
+obs_config = obs_PerceptualBias_comb_obs_config;
+
+end

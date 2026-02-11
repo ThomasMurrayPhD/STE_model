@@ -42,20 +42,124 @@ function [y, yhat] = obs_ResponseBias_comb_obs_sim(r, infStates, p)
 
 %% Separate parameters
 
-p_sgm = p(1:2); % parameters for the sigmoid model
-p_logRT = p(3:8); % parameters for the RT model
+% parameters for the sigmoid model
+zeta0 = p(1);
+zeta1 = p(2);
+
+% parameters for the RT model
+be0  = p(3);
+be1  = p(4);
+be2  = p(5);
+be3  = p(6);
+be4  = p(7);
+sa   = p(8);
 
 
 %% Run sim for binary predictions
-[pred, yhat_pred] = obs_ResponseBias_unitsq_sgm_tbt_sim(r, infStates, p_sgm);
+
+% Predictions or posteriors?
+pop = 1; % Default: predictions
+if r.c_obs.predorpost == 2
+    pop = 3; % Alternative: posteriors
+end
+
+x_state = infStates(:,1,pop);
+
+
+% Assumed structure of infStates:
+% dim 1: time (ie, input sequence number)
+% dim 2: HGF level
+% dim 3: 1: muhat, 2: sahat, 3: mu, 4: sa
+
+
+% Belief trajectories at 1st level
+x_state(x_state == 0) = eps;
+x_state(x_state == 1) = 1-eps;
+x_state_temp = tapas_logit(x_state, 1);
+x_state_temp = x_state_temp + (zeta1*r.u(:,2)); % add response bias
+x_state = tapas_sgm(x_state_temp, 1);
+
+
+% Apply the unit-square sigmoid to the inferred states
+prob = x_state.^zeta0./(x_state.^zeta0+(1-x_state).^zeta0);
+
+% Initialize random number generator
+if isnan(r.c_sim.seed)
+    rng('shuffle');
+else
+    rng(r.c_sim.seed);
+end
+
+% Simulate responses
+y_binary = binornd(1, prob);
+yhat_binary = prob;
+
+
+
+
 
 %% Run sim for continuous data modality (logRTs)
-[logReactionTime, yhat_rt] = obs_ResponseBias_logrt_linear_binary_sim(r, infStates, p_logRT);
+
+
+% Number of trials
+n = size(infStates,1);
+
+% Inputs
+u_al = r.u(:,1);
+u = u_al>0.5;
+
+stim_noise = 0.5-abs(u_al-.5); % [0,1]->0, [.2,.8]->.2, [.4,.6]->.4
+
+
+% Extract trajectories of interest from infStates
+mu1hat = infStates(:,1,1);
+sa1hat = infStates(:,1,2);
+mu2    = infStates(:,2,3);
+sa2    = infStates(:,2,4);
+% mu3    = infStates(:,3,3);
+
+
+% Surprise
+% ~~~~~~~~
+poo = mu1hat.^u.*(1-mu1hat).^(1-u); % probability of observed outcome
+surp = -log2(poo);
+% surp_shifted = [1; surp(1:(length(surp)-1))];
+
+% Bernoulli variance (aka irreducible uncertainty, risk) 
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+bernv = sa1hat;
+
+% Inferential variance (aka informational or estimation uncertainty, ambiguity)
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+inferv = tapas_sgm(mu2, 1).*(1 -tapas_sgm(mu2, 1)).*sa2; % transform down to 1st level
+
+% Phasic volatility (aka environmental or unexpected uncertainty)
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+% pv = tapas_sgm(mu2, 1).*(1-tapas_sgm(mu2, 1)).*exp(mu3); % transform down to 1st level
+
+
+% Calculate predicted log-reaction time
+% ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+% logrt = be0 +be1.*surp +be2.*bernv +be3.*inferv +be4.*pv;
+logrt = be0 +be1.*surp +be2.*bernv +be3.*inferv +be4.*stim_noise;
+
+
+% Initialize random number generator
+if isnan(r.c_sim.seed)
+    rng('shuffle');
+else
+    rng(r.c_sim.seed);
+end
+
+% Simulate
+y_reactionTime = logrt+sqrt(sa)*randn(n, 1);
+yhat_reactionTime = logrt;
+
 
 
 %% save values for both response data modalities
-y = [pred logReactionTime];
-yhat = [yhat_pred yhat_rt];
+y = [y_binary y_reactionTime];
+yhat = [yhat_binary yhat_reactionTime];
 
 end
 

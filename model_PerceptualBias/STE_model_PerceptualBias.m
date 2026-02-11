@@ -7,9 +7,7 @@
 
 
 
-% TO DO:
-%   put all the comb_obs files into single file - do this for all models.
-%   It's so much easier...
+
 
 %%
 clear;

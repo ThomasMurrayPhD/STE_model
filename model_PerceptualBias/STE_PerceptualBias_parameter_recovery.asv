@@ -1,0 +1,124 @@
+% Function to run parameter recovery for PerceptualBias model
+
+%% Get inputs
+% example data (to get contingencies etc)
+sub_data = readtable('..\STE_data\10369536_A_Threat.csv');
+
+% Contingency space
+cue = sub_data.Cue_idx;
+cue(cue==0) = -1; % balanced contrast coding for the "happy bias"
+outcome = sub_data.Outcome_p_sad/100;
+u_al = 1 - (0.5*(1+cue)-cue.*outcome);
+state = double(sub_data.Cue_idx == sub_data.Outcome_idx);
+
+sub_data.u_al = u_al;
+sub_data.state=state;
+sub_data.p_sad=outcome;
+
+% Responses
+sub_data.logRT = log(sub_data.Response_RT);
+sub_data.resp_state = double(sub_data.Cue_idx == sub_data.Response_idx);
+
+% model input
+u = [sub_data.u_al, cue];
+y = [sub_data.resp_state, sub_data.logRT];%, sub_data.Confidence_idx];
+
+
+%% Get configuration structures
+[prc_config, obs_config] = STE_PerceptualBias_config;
+optim_config     = tapas_quasinewton_optim_config(); % optimisation algorithm
+optim_config.nRandInit = 5;
+
+
+%% Run parameter recovery
+
+
+params = {
+    'rho',    'prc', 'native'
+    'om2',    'prc', 'native'
+    'al',     'prc', 'log'
+    'ze',     'obs', 'log'
+    'beta0',  'obs', 'native'
+    'beta1',  'obs', 'native'
+    'beta2',  'obs', 'native'
+    'beta3',  'obs', 'native'
+    'beta4',  'obs', 'native'
+    'sa',     'obs', 'log'
+};
+
+
+
+
+% run recovery
+N=200;
+
+% Preallocate
+recov = struct();
+for p = 1:size(params,1)
+    name = params{p,1};
+    space = params{p,3};
+
+    recov.(name).sim   = nan(N,1);
+    recov.(name).est   = nan(N,1);
+    recov.(name).space = space;
+end
+
+recov.LME = nan(N,1);
+recov.AIC = nan(N,1);
+recov.BIC = nan(N,1);
+
+
+% Loop
+for i = 1:N
+    
+    try
+        % simulate data with sampleModel
+        sim = tapas_sampleModel(u, prc_config, obs_config);
+
+        % store simulated params
+        recov.rho.sim(i)    = sim.p_prc.rho;
+        recov.om2.sim(i)    = sim.p_prc.om(2);
+        recov.al.sim(i)     = sim.p_prc.al;
+        recov.ze.sim(i)     = sim.p_obs.ze;
+        recov.beta0.sim(i)  = sim.p_obs.beta0;
+        recov.beta1.sim(i)  = sim.p_obs.beta1;
+        recov.beta2.sim(i)  = sim.p_obs.beta2;
+        recov.beta3.sim(i)  = sim.p_obs.beta3;
+        recov.beta4.sim(i)  = sim.p_obs.beta4;
+        recov.sa.sim(i)     = sim.p_obs.sa;
+
+        % recover
+        est = tapas_fitModel(...
+                    sim.y,...
+                    sim.u,...
+                    prc_config,...
+                    obs_config,...
+                    optim_config);
+    
+        % store recovered params
+        recov.rho.est(i)    = est.p_prc.rho;
+        recov.om2.est(i)    = est.p_prc.om(2);
+        recov.al.est(i)     = est.p_prc.al;
+        recov.ze.est(i)     = est.p_obs.ze;
+        recov.beta0.est(i)  = est.p_obs.beta0;
+        recov.beta1.est(i)  = est.p_obs.beta1;
+        recov.beta2.est(i)  = est.p_obs.beta2;
+        recov.beta3.est(i)  = est.p_obs.beta3;
+        recov.beta4.est(i)  = est.p_obs.beta4;
+        recov.sa.est(i)     = est.p_obs.sa;
+
+        % store fit metrics
+        if ~isinf(est.optim.LME)
+            recov.LME(i) = est.optim.LME;
+            recov.AIC(i) = est.optim.AIC;
+            recov.BIC(i) = est.optim.BIC;
+        end
+    catch
+    end
+
+end
+
+save('PerceptualBias_recovery.mat', 'recov');
+recovery_figures(recov);
+
+
