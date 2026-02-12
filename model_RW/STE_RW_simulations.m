@@ -41,8 +41,7 @@ y = sub_data.resp_state;
 
 
 %%
-prc_model_config = prc_RW_binary_config();
-obs_model_config = obs_RW_unitsq_sgm_config();
+[prc_config, obs_config] = STE_RW_config;
 
 bopars = tapas_fitModel([],...
                          u,...
