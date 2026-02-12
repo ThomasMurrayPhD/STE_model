@@ -27,10 +27,12 @@ u = [sub_data.u_al, cue];
 y = [sub_data.resp_state, sub_data.logRT];
 
 
+
 %% Get configuration structures
-[prc_config, obs_config] = STE_PerceptualBias_config;
+[prc_config, obs_config] = STE_PredictionBias_config;
 optim_config     = tapas_quasinewton_optim_config(); % optimisation algorithm
 optim_config.nRandInit = 5;
+
 
 
 %% Run parameter recovery
@@ -57,20 +59,19 @@ recov.AIC = nan(N, 1); % store AIC
 recov.BIC = nan(N, 1); % store BIC
 recov.est = cell(N,1); % store full est structure
 
-
 % Main loop
 for i = 1:N
-
+    
     % Sample from model params and simulate
     sim = tapas_sampleModel(u, prc_config, obs_config);
-
+    
     % Store simulated prc params
     for iP = 1:numel(prc_param_names)
         param_name=prc_param_names{iP};
         recov.(param_name).sim(i) = sim.p_prc.p(prc_param_idx(iP));
         recov.(param_name).space = prc_param_space{iP};
     end
-
+    
     % store simulated obs params
     for iP = 1:numel(obs_param_names)
         param_name=obs_param_names{iP};
@@ -90,18 +91,18 @@ for i = 1:N
                 optim_config);
 
             % get estimated parameters
-            if isfinite(est.optim.LME)
+            if ~isinf(est.optim.LME)
                 % store fit metrics
                 recov.LME(i) = est.optim.LME;
                 recov.AIC(i) = est.optim.AIC;
                 recov.BIC(i) = est.optim.BIC;
-
+                
                 % Store estimated prc params
                 for iP = 1:numel(prc_param_names)
                     param_name=prc_param_names{iP};
                     recov.(param_name).est(i) = est.p_prc.p(prc_param_idx(iP));
                 end
-
+                
                 % store simulated obs params
                 for iP = 1:numel(obs_param_names)
                     param_name=obs_param_names{iP};
@@ -111,13 +112,10 @@ for i = 1:N
             end
             recov.est{i} = est;
         catch
-
+            fprintf('\nCannot fit')
         end
     end
 end
 
-save('PerceptualBias_recovery2.mat', 'recov');
+save('PredictionBias_recovery2.mat', 'recov');
 recovery_figures(recov);
-
-
-

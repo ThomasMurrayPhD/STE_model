@@ -115,7 +115,7 @@ function c = prc_PredictionBias_ehgf_binary_pu_tbt_config
 c = struct;
 
 % Model name
-c.model = 'ehgf_binary_pu_tbt';
+c.model = 'prc_PredictionBias_ehgf_binary_pu_tbt';
 
 % Number of levels (minimum: 3)
 c.n_levels = 3;

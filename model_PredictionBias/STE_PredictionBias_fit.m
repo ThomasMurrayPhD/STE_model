@@ -28,7 +28,7 @@ y = [sub_data.resp_state, sub_data.logRT];
 
 
 %% Get configuration structures
-[prc_config, obs_config] = STE_PerceptualBias_config;
+[prc_config, obs_config] = STE_PredictionBias_config;
 optim_config     = tapas_quasinewton_optim_config(); % optimisation algorithm
 optim_config.nRandInit = 5;
 
@@ -84,4 +84,4 @@ for i = 1:N_files
     completion_times(i) = toc;
 end
 
-save('model_PerceptualBias_fit2.mat', 'model_fits');
+save('model_PredictionBias_fit2.mat', 'model_fits');

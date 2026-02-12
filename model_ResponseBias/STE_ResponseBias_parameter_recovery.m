@@ -28,7 +28,7 @@ y = [sub_data.resp_state, sub_data.logRT];
 
 
 %% Get configuration structures
-[prc_config, obs_config] = STE_PerceptualBias_config;
+[prc_config, obs_config] = STE_ResponseBias_config;
 optim_config     = tapas_quasinewton_optim_config(); % optimisation algorithm
 optim_config.nRandInit = 5;
 
@@ -39,12 +39,12 @@ optim_config.nRandInit = 5;
 N=200;
 
 % Parameters to recover
-prc_param_names = {'om2', 'rho2', 'al'};
-prc_param_idx   = [13, 8, 15];
-prc_param_space = {'native', 'native', 'log'};
-obs_param_names = {'ze', 'beta0', 'beta1', 'beta2', 'beta3', 'beta4', 'sa'};
-obs_param_idx   = [1, 2, 3, 4, 5, 6, 7];
-obs_param_space = {'log', 'native', 'native', 'native', 'native', 'native', 'log'};
+prc_param_names = {'om2', 'al'};
+prc_param_idx   = [13, 15];
+prc_param_space = {'native', 'log'};
+obs_param_names = {'zeta0', 'zeta1', 'beta0', 'beta1', 'beta2', 'beta3', 'beta4', 'sa'};
+obs_param_idx   = [1, 2, 3, 4, 5, 6, 7, 8];
+obs_param_space = {'log', 'native', 'native', 'native', 'native', 'native', 'native', 'log'};
 
 % preallocate sim and est parameters
 all_params = [prc_param_names, obs_param_names];
@@ -116,7 +116,7 @@ for i = 1:N
     end
 end
 
-save('PerceptualBias_recovery2.mat', 'recov');
+save('ResponseBias_recovery2.mat', 'recov');
 recovery_figures(recov);
 
 

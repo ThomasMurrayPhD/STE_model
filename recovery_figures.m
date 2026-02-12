@@ -1,7 +1,9 @@
 function recovery_figures(recov)
 
+
 all_params = fieldnames(recov);
-all_params(ismember(all_params, {'LME', 'AIC', 'BIC'})) = [];
+all_params(ismember(all_params, {'LME', 'AIC', 'BIC', 'est'})) = [];
+
 
 for iP = 1:numel(all_params)
     sim = recov.(all_params{iP}).sim;
@@ -9,6 +11,7 @@ for iP = 1:numel(all_params)
     valid = ~isnan(est);
     sim = sim(valid);
     est = est(valid);
+
     figname = all_params{iP};
     if strcmp(recov.(all_params{iP}).space, 'log')
         sim = log(sim);
@@ -22,7 +25,7 @@ for iP = 1:numel(all_params)
 
     figure('name', figname);  
     hold on;
-    scatter(sim, est);
+    scatter(sim, est, 40);
     h = refline(1,0); 
     h.Color = [0.8500    0.3250    0.0980];
     xlabel('Simulated');
