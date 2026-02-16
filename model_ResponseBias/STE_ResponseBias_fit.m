@@ -1,4 +1,4 @@
-% Function to run parameter recovery for PerceptualBias model
+% Function to run parameter recovery for ResponseBias model
 
 clear; close all; clc
 
