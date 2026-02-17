@@ -3,18 +3,20 @@
 clear;
 close all
 
+# % Use VBA toolbox for model comparison (ask Eddie)
+
+
 
 %% load model fits
-models(1).model_fits = importdata('model1_fit.mat');
-models(2).model_fits = importdata('model2_fit.mat');
-models(3).model_fits = importdata('model3_fit.mat');
+models(1).model_fits = importdata('model_PredictionBias\model_PredictionBias_fit.mat');
+models(2).model_fits = importdata('model_PredictionBias\model_PredictionBias_fit2.mat');
+% models(3).model_fits = importdata('model3_fit.mat');
 % models(4).model_fits = importdata('model4_fit.mat');
 
 model_names = {
-    'Prediction bias';
-    'Perception bias';
-    'Response bias'};
-    % 'No learning'};
+    'Prediction bias (stim_noise)';
+    'Prediction bias (PU)'};
+
 
 N_models = numel(model_names);
 
